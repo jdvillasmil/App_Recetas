@@ -1,0 +1,82 @@
+### ===========================
+### RECIPES - Pruebas de endpoints
+### ===========================
+### Reemplazar {{TOKEN}} con el token real del login/register
+
+### 1. Crear receta completa (con ingredientes, pasos y grupos)
+POST http://localhost:3000/api/recipes
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "title": "Pasta Carbonara",
+  "description": "Receta italiana clásica",
+  "imageUrl": "https://example.com/carbonara.jpg",
+  "prepTime": "30 minutos",
+  "servings": 4,
+  "ingredients": [
+    { "name": "Pasta", "quantity": "400g" },
+    { "name": "Huevos", "quantity": "4 unidades" },
+    { "name": "Queso parmesano", "quantity": "100g" }
+  ],
+  "steps": [
+    { "description": "Hervir agua con sal" },
+    { "description": "Cocinar la pasta al dente" },
+    { "description": "Batir huevos con queso" },
+    { "description": "Mezclar pasta con huevos fuera del fuego" }
+  ],
+  "groupIds": []
+}
+
+### 2. Obtener todas las recetas (ordenadas alfabéticamente)
+GET http://localhost:3000/api/recipes
+
+### 3. Obtener solo mis recetas (requiere token)
+GET http://localhost:3000/api/recipes?mine=true
+Authorization: Bearer {{TOKEN}}
+
+### 4. Buscar recetas por título
+GET http://localhost:3000/api/recipes?search=pasta
+
+### 5. Obtener receta por ID
+GET http://localhost:3000/api/recipes/1
+
+### 6. Actualizar receta
+PUT http://localhost:3000/api/recipes/1
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "title": "Pasta Carbonara Clásica",
+  "servings": 6,
+  "ingredients": [
+    { "name": "Pasta rigatoni", "quantity": "500g" },
+    { "name": "Huevos", "quantity": "6 unidades" },
+    { "name": "Queso pecorino", "quantity": "150g" },
+    { "name": "Guanciale", "quantity": "200g" }
+  ],
+  "steps": [
+    { "description": "Hervir agua con sal abundante" },
+    { "description": "Cocinar la pasta al dente" },
+    { "description": "Dorar guanciale en sartén" },
+    { "description": "Batir huevos con queso" },
+    { "description": "Mezclar todo fuera del fuego" }
+  ]
+}
+
+### 7. Agregar receta a grupos
+POST http://localhost:3000/api/recipes/1/groups
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "groupIds": [1]
+}
+
+### 8. Quitar receta de un grupo
+DELETE http://localhost:3000/api/recipes/1/groups/1
+Authorization: Bearer {{TOKEN}}
+
+### 9. Eliminar receta
+DELETE http://localhost:3000/api/recipes/1
+Authorization: Bearer {{TOKEN}}
