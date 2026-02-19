@@ -1,4 +1,4 @@
-const { Group, Recipe, Ingredient, Step } = require('../models');
+const { sequelize, Group, Recipe } = require('../models');
 
 // ── POST /api/groups ──
 const createGroup = async (req, res) => {
@@ -77,16 +77,20 @@ const updateGroup = async (req, res) => {
 // BORRADO DESTRUCTIVO: elimina el grupo Y todas las recetas asociadas.
 // Las recetas se borran físicamente (CASCADE elimina ingredientes, pasos y vínculos).
 const deleteGroup = async (req, res) => {
+  const t = await sequelize.transaction();
   try {
     const group = await Group.findByPk(req.params.id, {
       include: { model: Recipe, attributes: ['id'], through: { attributes: [] } },
+      transaction: t,
     });
 
     if (!group) {
+      await t.rollback();
       return res.status(404).json({ error: 'Grupo no encontrado.' });
     }
 
     if (group.userId !== req.user.id) {
+      await t.rollback();
       return res.status(403).json({ error: 'No tienes permiso para eliminar este grupo.' });
     }
 
@@ -96,17 +100,20 @@ const deleteGroup = async (req, res) => {
 
     // Borrar físicamente las recetas (CASCADE borra ingredientes, pasos y filas de RecipeGroups)
     if (recipeIds.length > 0) {
-      await Recipe.destroy({ where: { id: recipeIds } });
+      await Recipe.destroy({ where: { id: recipeIds }, transaction: t });
     }
 
     // Borrar el grupo
-    await group.destroy();
+    await group.destroy({ transaction: t });
+
+    await t.commit();
 
     return res.json({
       message: 'Group and associated recipes deleted successfully.',
       deletedRecipesCount,
     });
   } catch (error) {
+    await t.rollback();
     console.error('Error en deleteGroup:', error);
     return res.status(500).json({ error: 'Error interno del servidor.' });
   }

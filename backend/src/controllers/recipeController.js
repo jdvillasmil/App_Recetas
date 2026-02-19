@@ -30,7 +30,7 @@ const createRecipe = async (req, res) => {
     }
 
     // Verificar título único
-    const existing = await Recipe.findOne({ where: { title } }, { transaction: t });
+    const existing = await Recipe.findOne({ where: { title }, transaction: t });
     if (existing) {
       await t.rollback();
       return res.status(409).json({ error: 'Ya existe una receta con ese título.' });
