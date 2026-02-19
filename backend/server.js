@@ -4,6 +4,7 @@ const cors = require('cors');
 const { sequelize } = require('./src/models');
 const authRoutes = require('./src/routes/authRoutes');
 const recipeRoutes = require('./src/routes/recipeRoutes');
+const groupRoutes = require('./src/routes/groupRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.use(express.json());
 app.get('/health', (req, res) => res.json({ status: 'OK' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api/groups', groupRoutes);
 
 // Conectar BD y levantar servidor
 sequelize.authenticate()
