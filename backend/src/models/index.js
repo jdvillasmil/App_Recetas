@@ -14,9 +14,19 @@ Group.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Recipe, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Recipe.belongsTo(User, { foreignKey: 'userId' });
 
-// Un grupo tiene muchas recetas — borrado en cascada obligatorio
-Group.hasMany(Recipe, { foreignKey: 'groupId', onDelete: 'CASCADE' });
-Recipe.belongsTo(Group, { foreignKey: 'groupId' });
+// Many-to-Many: una receta puede estar en múltiples grupos y viceversa.
+// Al borrar un grupo se eliminan SOLO las filas de RecipeGroups (las recetas persisten).
+// Al borrar una receta se eliminan sus filas de RecipeGroups.
+Recipe.belongsToMany(Group, {
+  through: 'RecipeGroups',
+  foreignKey: 'recipeId',
+  otherKey: 'groupId',
+});
+Group.belongsToMany(Recipe, {
+  through: 'RecipeGroups',
+  foreignKey: 'groupId',
+  otherKey: 'recipeId',
+});
 
 // Una receta tiene muchos ingredientes y pasos — borrado en cascada
 Recipe.hasMany(Ingredient, { foreignKey: 'recipeId', onDelete: 'CASCADE' });
