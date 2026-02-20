@@ -4,7 +4,7 @@ import { CommonActions } from '@react-navigation/native';
 
 export const navigationRef = { current: null };
 
-const API_URL = 'http://localhost:3000'; // Cambiar a Railway después
+const API_URL = 'http://192.168.1.19:3000';
 
 const api = axios.create({
   baseURL: API_URL,
