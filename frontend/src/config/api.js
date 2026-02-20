@@ -1,5 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions } from '@react-navigation/native';
+
+export const navigationRef = { current: null };
 
 const API_URL = 'http://localhost:3000'; // Cambiar a Railway después
 
@@ -30,7 +33,14 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('user');
-      // TODO: Redirigir a login
+      if (navigationRef.current) {
+        navigationRef.current.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          })
+        );
+      }
     }
     return Promise.reject(error);
   }

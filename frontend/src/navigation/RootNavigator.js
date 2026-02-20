@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
+import { navigationRef } from '../config/api';
 import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
@@ -18,7 +19,7 @@ export default function RootNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       {user ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
